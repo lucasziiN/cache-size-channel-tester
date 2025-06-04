@@ -10,11 +10,17 @@ public class A4 {
         // Define the memory stride in bytes 
         int STRIDE = 64; 
         
+        int step = STRIDE / 4;
+
         // Loop through increasing array sizes from 4 KB to MAX_SIZE
         for (int i = 4096; i <= MAX_SIZE; i *=2){
             // Allocate an int array matching the current size in bytes
             int[] arr = new int [i/4]; // Divide by 4 since each int is 4 bytes
 
+            // Write to arrays
+            for (int j = 0; j<arr.length; j += step){
+                arr[j]++;
+            }
         }
     }
 }
