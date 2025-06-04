@@ -2,61 +2,41 @@
 #include <stdio.h>
 #include <stdint.h>
 
-uint8_t array[256*4096];	//Array to cache	
-int temp;
-unsigned char secret = 54;	//Secret value to steal
+#define MAX_SIZE (128 * 1024 * 1024)
+#define LINE_SIZE 64
 
-/*cache hit threshold assumed */
-
-#define DELTA 1024
-
-//flushes the array from the cache
-//void flushSideChannel()	
-//{ 
-//	int j;
-//	for (j = 4096; j < 128 * 1024 * 1024; j *= 2) {
-//		int i;
-//		for (i = 0; i < 256; i++) {
-//			int index = (i * j + DELTA) % sizeof(array);
-//			array[index] = 1;
-//			_mm_clflush(&array[index]);
-//		}
-//		
-//	}
-//	
-//}
-
-// Retrieve the secret value by accessing the corresponding array item
-void victim()
-{
-	temp = array[secret*4096 + DELTA];
-}
-
-void reloadSideChannel()
+int main(int argc, const char** argv)
 {
 	int junk = 0;
 	register uint64_t time1, time2;
-	volatile uint8_t *addr;
+	volatile uint8_t* addr;
+	uint64_t total_time;
 	int i;
+	int size;
+	int accesses;
+
 	
+
+	////initialize the array
+	//for (i = 0; i < 10; i++) array[i * 4096] = 1;
+	//
+	////FLUSH the array from the CPU cache
+	//for (i = 0; i < 10; i++) _mm_clflush(&array[i * 4096]);
+	//
+	////Access some of the array items
+	//
+	//array[3 * 4096] = 100;
+	//array[7 * 4096] = 200;
+
 	//Compute the CPU cycles taken to access each item
-	for (i = 0; i<256; i++)
-	{
-		addr = &array[i*4096 + DELTA];
-		time1 = __rdtscp(&junk);
-		junk = *addr;
-		time2 = __rdtscp(&junk) - time1;
-		
-		printf("Access time for array[%d*4096 +%d]: %d CPU cycles \n", i, DELTA, (int)time2);
-		
-	
+	for (int size = 4096; size < MAX_SIZE; size *= 2) {
+		//addr = &array[i * 4096];
+		//time1 = __rdtscp(&junk);
+		//junk = *addr;
+		//time2 = __rdtscp(&junk) - time1;
+
+		printf("Testing size: %d bytes (%.2f KB)\n", size, size / 1024.0);
 	}
-}
-int main(int argc, const char **argv)
-{
-	flushSideChannel();
-	victim();
-	reloadSideChannel();
-	return(0);
+	return 0;
 }
 
