@@ -4,8 +4,9 @@ public class A4 {
 
     public static void main(String[] args) {
         
-        // Set the limit size for the arrays (256MB)
+        // Set the limit size for the arrays (512MB)
         int MAX_SIZE = 512 * 1024 * 1024;
+
         int totalAccesses = MAX_SIZE/4;
 
         // Define the memory stride in bytes 
@@ -46,7 +47,7 @@ public class A4 {
 
             // Calculate and print average access time (in ms) for the current array size
             double averageAccessTime = totalTime / (LOOPS * 1_000_000.0);
-            System.out.printf("%8d KB\t%.4f ms\n", i / 1024, averageAccessTime);
+            System.out.printf("%8d KiB\t%.4f ms\n", i / 1024, averageAccessTime);
         }
     }
 }
